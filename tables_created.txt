@@ -1,0 +1,17 @@
+create table cstmast ( cstid number(4) primary key, cstname char(25) not null, cstcity char(3) check (cstcity in ('udp','mng','bng','pjm','mar')),cstdep number(8,2));
+create table itmmast ( itmid number(4) primary key, itmname char(25) not null, itmprice number(6,2) not null, itmstock number(4));
+create table trn ( trnid number(4) primary key, trnqty number(3), trndate date, itmid number(4) references itmmast on delete cascade, cstid number(4) references cstmast on delete cascade);
+insert into cstmast values(101,'John Doe','udp',1500.00);
+insert into cstmast values(102,'Jane Smith','mng',2200.75);
+insert into cstmast values(103,'Michael Johnson','bng',1800.50);
+insert into cstmast values(104,'Sarah Williams','pjm',3200.25);
+insert into cstmast values(105,'Robert Brown','mar',2500.00);
+insert into cstmast values(106,'Emily Anderson','udp',1900.50);
+select * from cstmast;
+insert into itmmast values(201,'Laptop',800.00,10);
+insert into itmmast values(202,'Smartphone',400.50,25);
+insert into itmmast values(203,'Wireless Mouse',25.99,50);
+insert into itmmast values(204,'Bluetooth Earphones',60.75,15);
+insert into itmmast values(205,'External Hard Drive',120.00,8);
+insert into itmmast values(206,'USB Flash Drive',15.25,100);
+select * from itmmast;

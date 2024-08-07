@@ -1,0 +1,29 @@
+create or replace trigger ttrn
+before insert on trn
+for each row
+declare
+  valid char;
+  price itmmast.itmprice%type;
+  sale_value itmmast.itmprice%type;
+  nodeposit exception;
+begin
+  price:=0;
+  checkqty(:new.itmid,:new.trnqty,price);
+  dbms_output.put_line('Price of items is:'||price);
+  if price=0 then
+    raise_application_error(-20007,'stock not available');
+  end if;
+  sale_value:=price * :new.trnqty;
+  dbms_output.put_line('Sale Value:'||sale_value);
+  valid:=checkdep(:new.cstid,sale_value);
+  dbms_output.put_line('Valid:'||valid);
+  if upper(valid) <> 'Y' then
+    raise nodeposit;
+  end if;
+  update itmmast set itmstock=itmstock- :new.trnqty where itmmast.itmid=:new.itmid;
+  update cstmast set cstdep = cstdep - sale_value where cstmast.cstid= :new.cstid;
+exception
+  when nodeposit then
+    raise_application_error(-20008,'Deposit amount insufficient---terminating');
+end;
+/

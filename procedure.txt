@@ -1,0 +1,22 @@
+create or replace procedure checkqty(id in number,qty in number,vl out number)
+is
+rec_itm itmmast%rowtype;
+cursor cur_itm is select * from itmmast where itmid=id;
+begin
+  open cur_itm;
+  dbms_output.put_line('Item ID:'||id);
+  fetch cur_itm into rec_itm;
+  if cur_itm%rowcount=0 then
+    raise_application_error(-20004,'No data for item');
+  end if;
+  if cur_itm%rowcount>1 then
+    raise_application_error(-20000,'Many records');
+  end if;
+  if qty<=rec_itm.itmstock then
+    vl:=rec_itm.itmprice;
+  else
+    vl:=0;
+  end if;
+  close cur_itm;
+end;
+/
